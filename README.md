@@ -2,6 +2,7 @@
 ### *Privacy-Preserving Multi-Stream Behavioral Baseline Engine for Typing Performance*
 
 > **Series:** NeuroLink V1 → V2 → V3 → **V4.0**  
+
 > **Data:** 50,321 keybr.com lessons · Dec 2024 – Jul 2026  
 > **Author:** Youssef Zuaiter
 
@@ -25,6 +26,7 @@ The long-term research direction: passive, privacy-preserving detection of neuro
 | V2 | Statistical modeling | Rolling baselines, trend detection |
 | V3 | N-of-1 autoencoder | DP-SGD training, LDI anomaly detection |
 | **V4** | **Multi-stream decomposition** | **3 decoder heads, per-stream LDI, 90-day forecast** |
+
 
 ---
 
