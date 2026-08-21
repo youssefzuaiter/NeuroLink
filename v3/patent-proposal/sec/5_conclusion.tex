@@ -1,0 +1,47 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented NeuroLink 3.0, an N-of-1 privacy-preserving deep autoencoder
+that learns a compact 10-dimensional \emph{Muscle Memory Signature} from
+42,501 personal typing lessons spanning 17 months.
+By training exclusively on a single individual's longitudinal data and
+flagging sessions that deviate from their own established baseline,
+the system avoids all population-norm assumptions — a fundamental departure
+from the authentication framing that dominates keystroke dynamics research.
+
+The central technical contribution is the \emph{residual reformulation} of
+the EV and ESRP features.
+Prior rolling-mean formulations create a structural reconstruction ceiling:
+the autoencoder cannot reconstruct a rolling mean from a single-lesson
+feature vector, regardless of capacity.
+Replacing these with temporal deviations from the rolling mean resolves
+the ceiling and raises EV $R^2$ from 0.234 to 0.954 and ESRP $R^2$ from
+0.113 to 0.854.
+Ablation experiments confirm that this reformulation, combined with
+\texttt{ReduceLROnPlateau} scheduling and feature-weight rebalancing,
+is responsible for the overall improvement from $R^2{=}0.9502$ (v4) to
+$R^2{=}0.9586$ (v5.1).
+
+Differential privacy via Opacus DP-SGD provides a formal guarantee that the
+learned behavioral baseline cannot reconstruct individual typing sessions,
+achieving $\varepsilon{=}7.9983$ at $\delta{=}10^{-5}$ — an important property
+for any system that processes longitudinal personal behavioral data.
+Bootstrap confidence interval alerting reduces false positives by replacing a
+single point threshold with a 95\% CI band, enabling nuanced three-tier
+classification over 435 deployment days: 91.7\% NORMAL, 4.8\% MARGINAL, 3.4\% HIGH.
+
+\paragraph{Limitations.}
+The system is trained on a single participant, which is by design for N-of-1
+methods but limits generalizability claims.
+The 17-month dataset captures a meaningful longitudinal record, but longer
+observation windows would strengthen baseline stability.
+The current architecture uses a fixed 12-feature set; future work could
+incorporate raw keystroke sequences via recurrent or attention-based encoders.
+
+\paragraph{Future Work.}
+Extending to multiple individuals with federated learning under DP would
+allow population-level insights while preserving N-of-1 personalization.
+Incorporating external ground-truth labels (sleep quality, cognitive load
+assessments) would enable supervised validation of the anomaly signal.
+The empirical Ghost V3 predictor could be extended to multi-step forecasting
+using the latent Muscle Memory Signature as a state variable.

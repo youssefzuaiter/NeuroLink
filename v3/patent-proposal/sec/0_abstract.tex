@@ -1,0 +1,21 @@
+\begin{abstract}
+We present NeuroLink 3.0, a privacy-preserving N-of-1 deep autoencoder for
+detecting longitudinal behavioral drift in keystroke dynamics.
+Unlike population-based approaches, our system learns a personalized baseline
+from an individual's own typing history and flags sessions that deviate from
+it using reconstruction error.
+Trained on 42,501 keybr.com typing lessons spanning 17 months,
+our undercomplete autoencoder (12\(\rightarrow\)32\(\rightarrow\)16\(\rightarrow\)
+\textbf{10}\(\rightarrow\)16\(\rightarrow\)32\(\rightarrow\)12, 2,230 parameters)
+achieves a variance-weighted validation \(R^2\) of \textbf{0.9586} under
+differential privacy (\(\varepsilon{=}7.9983\), \(\delta{=}10^{-5}\)) via DP-SGD.
+We introduce \emph{residual} Execution Velocity (EV) and Error-Speed Recovery
+Penalty (ESRP) features — temporal deviation signals that resolve a structural
+reconstruction ceiling present in rolling-mean formulations, raising EV \(R^2\)
+from 0.234 to 0.954 and ESRP \(R^2\) from 0.113 to 0.854.
+A bootstrap confidence interval derived from 2,000 resamples of the training
+Longitudinal Drift Index (LDI) enables three-tier anomaly alerting
+(HIGH\,/\,MARGINAL\,/\,NORMAL), and an empirically calibrated Ghost V3
+predictor derives its drift-adjustment scale factor directly from data
+rather than relying on a hand-tuned constant.
+\end{abstract}

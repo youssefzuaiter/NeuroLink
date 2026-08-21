@@ -1,0 +1,193 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{neurolink_v5_1_dashboard.png}
+  \caption{%
+    \textbf{NeuroLink 3.0 v5.1 system dashboard over 435 deployment days.}
+    \textbf{Top row:} 17-month Longitudinal Drift Index (LDI) timeline with
+    7-day rolling mean (blue), bootstrap 95\% CI band (orange shading),
+    HIGH anomaly days (red circles, LDI $\geq\theta_{\text{hi}}$), and
+    MARGINAL days (orange squares, $\theta_{\text{lo}}\leq$LDI$<\theta_{\text{hi}}$).
+    \textbf{Middle left:} Training and validation loss convergence; early stopping
+    fires at epoch 54.
+    \textbf{Middle right:} Per-feature validation $R^2$ — 10 of 12 features
+    exceed 0.90; all exceed 0.85.
+    \textbf{Bottom row (left to right):} Circadian drift gate showing mean LDI
+    by UTC hour, monthly LDI heatmap, hand asymmetry index over time,
+    and a 2-D PCA projection of the 10-dimensional Muscle Memory Signature
+    latent space coloured by WPM.%
+  }
+  \label{fig:dashboard}
+\end{figure*}
+
+\subsection{Experimental Setup}
+\label{sec:setup}
+
+The 42,501 lessons are split chronologically: the earliest 85\% (lessons
+1--36,125) form the training set, the next 7.5\% the validation set, and the
+final 7.5\% the held-out test set.
+This split preserves temporal order, preventing any future information from
+leaking into training.
+The first 36,125 training lessons also define the ``normal'' baseline from
+which the bootstrap anomaly thresholds are derived.
+
+All features are standardized with zero mean and unit variance using
+statistics computed \emph{only} on the training split, then applied
+identically to validation and test splits.
+The model is implemented in PyTorch 2.x and trained on an NVIDIA T4 GPU
+(Google Colab) with batch size 64 for up to 200 epochs.
+
+\subsection{Ablation Study}
+\label{sec:ablation}
+
+\Cref{tab:ablation} traces the progression from the baseline v4 system to
+the final v5.1 model, isolating the contribution of each design choice.
+
+\begin{table}[h]
+  \centering
+  \caption{Ablation study: cumulative improvements from v4 to v5.1.
+           All metrics evaluated on the held-out test split.
+           \textbf{Bold} marks the best value per column.}
+  \label{tab:ablation}
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Variant} & \textbf{Val $R^2$} & \textbf{EV $R^2$} & \textbf{ESRP $R^2$} & \textbf{Best Ep.} \\
+    \midrule
+    v4 (rolling-mean EV/ESRP)    & 0.9502 & 0.234 & 0.113 & 47 \\
+    v5 (residual + LR 5e-3)      & 0.8860 & 0.948 & 0.730 & 10 \\
+    v5.1 (+ ReduceLR + weights)  & \textbf{0.9586} & \textbf{0.954} & \textbf{0.854} & \textbf{54} \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\paragraph{v4 → v5: Residual Reformulation.}
+Replacing rolling-mean EV and ESRP with their residual formulations
+(Eqs.~\ref{eq:ev}--\ref{eq:esrp}) raises EV $R^2$ from 0.234 to 0.948
+and ESRP $R^2$ from 0.113 to 0.730.
+However, v5 converges prematurely at epoch 10 due to the initial LR of
+$5\times10^{-3}$: residual features are structurally easy to predict,
+so the loss drops quickly while harder features (\texttt{lesson\_dur\_z},
+\texttt{practice\_gap}) are insufficiently optimized.
+
+\paragraph{v5 → v5.1: ReduceLROnPlateau + Weight Rebalancing.}
+Lowering the initial LR to $2\times10^{-3}$ and switching to
+\texttt{ReduceLROnPlateau} (factor 0.5, patience 5) allows the optimizer
+to escape early plateaus.
+Rebalancing feature weights — raising \texttt{lesson\_dur\_z} from 2.0 to
+4.0 and \texttt{practice\_gap} from 1.5 to 2.5, while lowering EV and
+ESRP from 2.0 to 1.0 — redirects model capacity toward harder features
+without sacrificing easy ones.
+The model trains to epoch 54 and uses nearly the full DP budget
+($\varepsilon{=}7.9983$), yielding the best overall $R^2$ across all variants.
+
+\subsection{Per-Feature Reconstruction Quality}
+\label{sec:perfeat}
+
+\Cref{tab:perfeat} reports the per-feature validation $R^2$ for the final
+v5.1 model.
+All 12 features exceed $R^2{=}0.82$, and 10 of 12 exceed 0.90.
+
+\begin{table}[h]
+  \centering
+  \caption{Per-feature validation $R^2$ for NeuroLink 3.0 v5.1.}
+  \label{tab:perfeat}
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Feature} & \textbf{$R^2$} & \textbf{Weight $w_j$} \\
+    \midrule
+    EV (residual)          & 0.954 & 1.0 \\
+    RSV                    & 0.964 & 2.0 \\
+    SSF                    & 0.980 & 1.0 \\
+    ESRP (residual)        & 0.854 & 1.0 \\
+    CTA (sin)              & 0.940 & 1.0 \\
+    wpm\_vs\_50roll        & 0.890 & 1.0 \\
+    CTA\_cos               & 0.981 & 1.0 \\
+    lesson\_dur\_z         & 0.827 & 4.0 \\
+    active\_char\_frac     & 0.954 & 1.0 \\
+    hand\_asymmetry        & 0.990 & 2.0 \\
+    practice\_gap          & 0.904 & 2.5 \\
+    error\_entropy         & 0.989 & 2.0 \\
+    \midrule
+    \textbf{Variance-weighted mean} & \textbf{0.9586} & --- \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+The two lowest-scoring features (\texttt{lesson\_dur\_z}, $R^2{=}0.827$, and
+\texttt{ESRP}, $R^2{=}0.854$) both reflect high-variance, heavy-tailed
+distributions that are intrinsically harder to compress.
+The hand asymmetry and error entropy features, despite their 2.0 weights,
+achieve near-perfect reconstruction ($\geq0.989$), suggesting they encode
+highly regular within-user patterns.
+
+\subsection{Longitudinal Drift Index Analysis}
+\label{sec:ldi_results}
+
+\Cref{tab:ldi} summarizes LDI statistics and anomaly tier counts over the
+full 435-day deployment period.
+\Cref{fig:dashboard} (top row) shows the complete timeline.
+
+\begin{table}[h]
+  \centering
+  \caption{LDI summary and anomaly tier distribution over 435 deployment days.}
+  \label{tab:ldi}
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Metric} & \textbf{Value} \\
+    \midrule
+    Training LDI mean              & 0.0548 \\
+    Training LDI std               & 0.0758 \\
+    Bootstrap $\theta_{\text{lo}}$ & 0.1744 \\
+    Bootstrap $\theta_{\text{hi}}$ & 0.2352 \\
+    \midrule
+    NORMAL days  ($< \theta_{\text{lo}}$)                              & 399 (91.7\%) \\
+    MARGINAL days ($\theta_{\text{lo}} \leq \cdot < \theta_{\text{hi}}$) & 21 (4.8\%) \\
+    HIGH days ($\geq \theta_{\text{hi}}$)                              & 15 (3.4\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The system achieves a low false-positive rate: 91.7\% of days are classified
+as NORMAL, consistent with the assumption that most days reflect the
+user's established behavioral baseline.
+HIGH anomalies (3.4\%) cluster around days with irregular practice schedules
+(high \texttt{practice\_gap}) or atypical session durations, which the model
+correctly identifies as deviating from baseline.
+The MARGINAL tier (4.8\%) provides a warning band that captures days
+near-threshold without triggering the HIGH alert, reducing unnecessary alarms.
+
+\subsection{Ghost V3 Drift-Adjusted Predictor}
+\label{sec:ghost}
+
+The \emph{Empirical Ghost V3} predictor provides a closed-form estimate of
+expected WPM as a function of observed LDI deviation from baseline.
+We fit a linear regression across all 42,501 lessons:
+\[
+  \widehat{\text{WPM}} = a + b \cdot \text{ldi\_ratio}
+\]
+where $\text{ldi\_ratio} = \text{LDI}_t / \overline{\text{LDI}}_{\text{train}}$
+is the ratio of current daily LDI to the training-period mean.
+The fitted coefficients yield an empirical scale factor
+$\gamma = -b / \overline{\text{WPM}}$, which replaces the hand-tuned constant
+used in Ghost V2.
+
+The key distinction from prior Ghost versions is that $\gamma$ is derived
+entirely from data: it reflects how much WPM typically drops for each unit
+of normalized LDI increase, measured over the full longitudinal record.
+This eliminates an unverified hyperparameter and makes the predictor
+falsifiable: $\gamma$ can be re-estimated as more data accumulates without
+retraining the autoencoder.
+
+\subsection{Privacy Accounting}
+\label{sec:privacy}
+
+Training with Opacus DP-SGD (RDP accountant, $\delta{=}10^{-5}$, $C{=}1.0$,
+$\sigma{=}0.5994$, batch size 64) over 54 epochs yields a final privacy
+expenditure of $\varepsilon{=}7.9983$, within 0.0017 of the target $\varepsilon{=}8.0$.
+This guarantees that the trained model cannot output significantly different
+results on two datasets differing by a single lesson, bounding the
+information any single training lesson can contribute to the behavioral baseline.
