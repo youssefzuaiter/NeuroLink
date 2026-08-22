@@ -4,6 +4,9 @@ NeuroLink is a personal AI system that learns your unique typing behavioral sign
 
 → **New here? Start with [`v4/`](v4/)** for the current iteration, or [`v3/`](v3/) for the version with the highest reported test R² and the accompanying paper draft.
 
+## TRY IT YOURSELF, TEST YOUR DATA 
+(https://youssefzuaiter.github.io/NeuroLink/)
+
 ## Versions
 
 | Version | Core idea | Key result |
@@ -35,6 +38,3 @@ Raw typing session exports (`typing-data.json`, `*.csv` feature files) are exclu
 ## License
 
 MIT — see [`v3/LICENSE`](v3/LICENSE).
-
-## TRY IT YOURSELF, TEST YOUR DATA 
-(https://youssefzuaiter.github.io/NeuroLink/)
