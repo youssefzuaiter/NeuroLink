@@ -37,4 +37,4 @@ Raw typing session exports (`typing-data.json`, `*.csv` feature files) are exclu
 MIT — see [`v3/LICENSE`](v3/LICENSE).
 
 ## TRY IT YOURSELF, TEST YOUR DATA 
-github.com/youssefzuaiter/NeuroLink
+(https://youssefzuaiter.github.io/NeuroLink/)
