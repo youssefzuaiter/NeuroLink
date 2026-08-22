@@ -1,0 +1,783 @@
+<title>NeuroLink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:        #FFFFFF;
+  --bg2:       #F8FAFC;
+  --border:    #E2E8F0;
+  --border2:   #CBD5E1;
+  --text:      #0F172A;
+  --body:      #1E293B;
+  --muted:     #64748B;
+  --light:     #94A3B8;
+  --blue:      #2563EB;
+  --blue-dim:  #EFF6FF;
+  --green:     #059669;
+  --green-dim: #ECFDF5;
+  --red:       #DC2626;
+  --red-dim:   #FEF2F2;
+  --amber:     #D97706;
+  --amber-dim: #FFFBEB;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0F1117;
+    --bg2:       #161B27;
+    --border:    #1E2A3B;
+    --border2:   #2D3F55;
+    --text:      #F1F5F9;
+    --body:      #CBD5E1;
+    --muted:     #64748B;
+    --light:     #475569;
+    --blue:      #60A5FA;
+    --blue-dim:  #1E2F4D;
+    --green:     #34D399;
+    --green-dim: #0A2E22;
+    --red:       #F87171;
+    --red-dim:   #2E0E0E;
+    --amber:     #FBBF24;
+    --amber-dim: #2D1F06;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0F1117;
+  --bg2:       #161B27;
+  --border:    #1E2A3B;
+  --border2:   #2D3F55;
+  --text:      #F1F5F9;
+  --body:      #CBD5E1;
+  --muted:     #64748B;
+  --light:     #475569;
+  --blue:      #60A5FA;
+  --blue-dim:  #1E2F4D;
+  --green:     #34D399;
+  --green-dim: #0A2E22;
+  --red:       #F87171;
+  --red-dim:   #2E0E0E;
+  --amber:     #FBBF24;
+  --amber-dim: #2D1F06;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--body);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── layout ── */
+.page-col   { max-width: 720px;  margin: 0 auto; padding: 0 1.5rem; }
+.wide-col   { max-width: 960px;  margin: 0 auto; padding: 0 1.5rem; }
+.full-bleed { width: 100%; }
+
+/* ── nav ── */
+nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem; font-weight: 600;
+  color: var(--text); text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.nav-brand .v { color: var(--blue); font-weight: 400; font-size: 0.75rem; }
+.nav-right {
+  display: flex; align-items: center; gap: 1.75rem;
+}
+.nav-right a {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem; color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--text); }
+.nav-right .github {
+  font-weight: 500; color: var(--blue);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
+  padding: 0.35rem 0.875rem; border-radius: 4px;
+  font-size: 0.8125rem;
+}
+
+/* ── paper header ── */
+.paper-header {
+  padding: 5rem 1.5rem 3rem;
+  max-width: 720px; margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.paper-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 1.25rem;
+}
+.paper-title {
+  font-size: 2.5rem; font-weight: 400;
+  line-height: 1.2; color: var(--text);
+  margin-bottom: 1rem; text-wrap: balance;
+}
+.paper-subtitle {
+  font-size: 1.125rem; font-weight: 300;
+  color: var(--muted); line-height: 1.5;
+  margin-bottom: 2rem; font-style: italic;
+}
+.paper-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 1.5rem;
+  padding-bottom: 2rem; border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.paper-meta span { display: flex; align-items: center; gap: 0.375rem; }
+.paper-meta strong { color: var(--body); font-weight: 500; }
+
+/* ── abstract ── */
+.abstract {
+  background: var(--bg2);
+  border-left: 3px solid var(--blue);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0 4px 4px 0;
+}
+.abstract-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 0.75rem;
+}
+.abstract p {
+  font-size: 0.9375rem; line-height: 1.75;
+  color: var(--body);
+}
+
+/* ── key numbers ── */
+.key-numbers {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--border); border-radius: 6px;
+  overflow: hidden;
+}
+.kn {
+  padding: 1.375rem 1.25rem;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.kn:last-child { border-right: none; }
+.kn-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.625rem; font-weight: 500;
+  color: var(--text); line-height: 1;
+  margin-bottom: 0.375rem;
+  font-variant-numeric: tabular-nums;
+}
+.kn-val .accent { color: var(--blue); }
+.kn-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem; color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── waveform figure ── */
+.figure-block {
+  margin: 2.5rem 0;
+  border: 1px solid var(--border); border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg2);
+}
+.figure-canvas-wrap {
+  width: 100%; height: 180px; position: relative;
+  background: var(--bg2);
+}
+#waveCanvas { width: 100%; height: 100%; display: block; }
+.figure-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem; color: var(--muted);
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--border);
+  line-height: 1.55;
+}
+.figure-caption strong { color: var(--body); font-weight: 500; }
+
+/* ── body sections ── */
+.paper-body { padding: 3rem 0 5rem; }
+
+.section-block { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+.section-block:first-child { border-top: none; }
+
+.sec-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.5rem;
+}
+.sec-title {
+  font-size: 1.5rem; font-weight: 400;
+  color: var(--text); margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+.sec-body p {
+  margin-bottom: 1.125rem;
+  font-size: 1rem; line-height: 1.8; color: var(--body);
+}
+.sec-body p:last-child { margin-bottom: 0; }
+
+/* ── feature table ── */
+.feat-table-wrap { overflow-x: auto; margin: 1.75rem 0; }
+.feat-table {
+  width: 100%; border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.feat-table thead tr {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border2);
+}
+.feat-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); text-align: left;
+  padding: 0.625rem 1rem;
+}
+.feat-table td {
+  font-size: 0.9rem; padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--body); line-height: 1.5;
+}
+.feat-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8125rem; color: var(--blue);
+  white-space: nowrap;
+}
+.stream-header td {
+  background: var(--bg2);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); padding: 0.5rem 1rem;
+}
+
+/* ── results table ── */
+.results-table-wrap { overflow-x: auto; margin: 1.75rem 0; }
+.results-table {
+  width: 100%; border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.results-table thead tr { border-bottom: 2px solid var(--border2); }
+.results-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); text-align: right; padding: 0.625rem 1rem;
+}
+.results-table th:first-child { text-align: left; }
+.results-table td {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem; padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted); text-align: right;
+}
+.results-table td:first-child {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem; color: var(--body);
+  text-align: left;
+}
+.results-table tr.hl td { background: var(--blue-dim); color: var(--body); }
+.results-table tr.hl td:first-child { color: var(--blue); font-weight: 600; }
+.sig  { color: var(--green); }
+.ns   { color: var(--red); }
+
+/* ── detection bars ── */
+.det-bars { margin: 1.75rem 0; }
+.det-bar { display: flex; align-items: center; gap: 0.875rem; margin-bottom: 0.625rem; }
+.det-name { font-family: 'Inter', sans-serif; font-size: 0.8125rem; color: var(--body); width: 8rem; flex-shrink: 0; }
+.det-track { flex: 1; height: 8px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.det-fill  { height: 100%; border-radius: 2px; }
+.det-pct   { font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; color: var(--body); width: 2.5rem; text-align: right; }
+
+/* ── callout boxes ── */
+.callout-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.75rem 0; }
+.callout-box {
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 1.25rem; background: var(--bg2);
+}
+.cb-lbl { font-family: 'Inter', sans-serif; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.375rem; }
+.cb-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 500; color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; }
+.cb-val.blue { color: var(--blue); }
+.cb-val.green { color: var(--green); }
+.cb-val.amber { color: var(--amber); }
+.cb-sub { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; line-height: 1.4; }
+
+/* ── tier badges ── */
+.tier {
+  display: inline-block;
+  font-family: 'Inter', sans-serif; font-size: 0.6875rem; font-weight: 600;
+  padding: 0.15rem 0.5rem; border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+.t-h { background: var(--red-dim);   color: var(--red);   }
+.t-e { background: var(--amber-dim); color: var(--amber); }
+.t-n { background: var(--green-dim); color: var(--green); }
+
+/* ── steps ── */
+.steps-block { margin: 1.75rem 0; }
+.step-row {
+  display: grid; grid-template-columns: 2rem 1fr;
+  gap: 1.25rem; padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.step-row:first-child { border-top: 1px solid var(--border); }
+.step-n {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--blue);
+  width: 1.75rem; height: 1.75rem;
+  border: 1.5px solid var(--blue);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 0.125rem;
+}
+.step-title { font-size: 1rem; font-weight: 400; color: var(--text); margin-bottom: 0.375rem; }
+.step-desc  { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+.inline-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: 3px;
+  padding: 0.1em 0.4em; color: var(--blue);
+}
+
+/* ── disclaimer ── */
+.disclaimer-box {
+  background: var(--amber-dim);
+  border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+  border-radius: 6px; padding: 1rem 1.25rem;
+  margin: 1.75rem 0;
+}
+.disclaimer-box p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem; color: var(--amber);
+  line-height: 1.6; margin: 0;
+}
+.disclaimer-box strong { font-weight: 600; }
+
+/* ── conditions list ── */
+.conditions { list-style: none; margin: 1.25rem 0; }
+.conditions li {
+  padding: 0.625rem 0 0.625rem 1.25rem;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.9375rem; color: var(--body);
+  position: relative; line-height: 1.6;
+}
+.conditions li:first-child { border-top: 1px dashed var(--border); }
+.conditions li::before { content: '→'; position: absolute; left: 0; color: var(--blue); font-size: 0.875rem; }
+
+/* ── try it section ── */
+.try-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+.try-section h2 {
+  font-size: 1.75rem; font-weight: 400;
+  color: var(--text); margin-bottom: 0.75rem;
+}
+.try-section p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem; color: var(--muted);
+  margin-bottom: 2rem; max-width: 42ch; margin-left: auto; margin-right: auto;
+  line-height: 1.65;
+}
+.try-btn {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem; font-weight: 600;
+  color: #FFF; background: var(--blue);
+  padding: 0.75rem 2rem; border-radius: 6px;
+  text-decoration: none;
+}
+.try-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem; color: var(--muted);
+  margin-top: 1rem; display: block;
+}
+
+/* ── footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+}
+.foot-l { font-family: 'Inter', sans-serif; font-size: 0.8125rem; color: var(--muted); }
+.foot-r { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--blue); text-decoration: none; }
+
+/* ── responsive ── */
+@media (max-width: 700px) {
+  .paper-title { font-size: 1.875rem; }
+  .key-numbers { grid-template-columns: repeat(2, 1fr); }
+  .callout-row { grid-template-columns: 1fr; }
+  .nav-right a:not(.github) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">NeuroLink <span class="v">V4.0</span></a>
+  <div class="nav-right">
+    <a href="#methods">Methods</a>
+    <a href="#results">Results</a>
+    <a href="#research">Research</a>
+    <a class="github" href="https://github.com/youssefzuaiter/neurolink" target="_blank">GitHub →</a>
+  </div>
+</nav>
+
+<!-- PAPER HEADER -->
+<div class="paper-header">
+  <div class="paper-label">Research Project · August 2026</div>
+  <h1 class="paper-title">NeuroLink: A Privacy-Preserving Multi-Stream Behavioral Baseline Engine for Personal Typing Performance Monitoring</h1>
+  <p class="paper-subtitle">Differentially private N-of-1 autoencoder for longitudinal behavioral anomaly detection</p>
+  <div class="paper-meta">
+    <span><strong>Author</strong> Youssef Zuaiter</span>
+    <span><strong>Dataset</strong> 50,321 keybr.com lessons</span>
+    <span><strong>Period</strong> Dec 2024 – Jul 2026</span>
+    <span><strong>Code</strong> <a href="https://github.com/youssefzuaiter/neurolink" style="color:var(--blue);">github.com/youssefzuaiter/neurolink</a></span>
+  </div>
+
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>We present NeuroLink V4, a differentially private N-of-1 autoencoder that learns a personal behavioral baseline from typing history and detects longitudinal drift across three independent streams — Speed, Accuracy, and Motor control. Unlike population-based anomaly detectors, the system trains exclusively on a single user's data, requiring no external labels or cross-user comparisons. A shared encoder (15→32→16→10, Tanh) feeds three stream-specific decoder heads, each trained with Huber loss normalized by head size. Differential privacy is enforced via DP-SGD (Opacus, ε=9.997, δ=1×10⁻⁵). On a 50,321-lesson dataset spanning 492 days, the model achieves validation R²=0.9751 at a privacy cost of ΔR²=+0.0478 relative to a non-private baseline. Anomaly days show a mean WPM gap of −45.9 (p&lt;0.001). The long-term research direction is passive neurological health monitoring through everyday typing behavior.</p>
+  </div>
+
+  <div class="key-numbers">
+    <div class="kn"><div class="kn-val">0.975<span class="accent">1</span></div><div class="kn-lbl">Validation R²</div></div>
+    <div class="kn"><div class="kn-val">ε<span class="accent">=10</span></div><div class="kn-lbl">Privacy budget</div></div>
+    <div class="kn"><div class="kn-val">89<span class="accent">%</span></div><div class="kn-lbl">Dec 2024 detection</div></div>
+    <div class="kn"><div class="kn-val">−45<span class="accent">.9</span></div><div class="kn-lbl">WPM gap (flagged days)</div></div>
+  </div>
+</div>
+
+<!-- WAVEFORM FIGURE -->
+<div class="page-col" style="margin-top: 2.5rem;">
+  <div class="figure-block">
+    <div class="figure-canvas-wrap">
+      <canvas id="waveCanvas"></canvas>
+    </div>
+    <div class="figure-caption">
+      <strong>Figure 1.</strong> Simulated multi-stream LDI signal. Three behavioral streams (Speed, Accuracy, Motor) are monitored independently. An anomaly spike (red) on the Speed stream triggers a <span class="tier t-h">HIGH</span> classification while other streams remain <span class="tier t-n">NORMAL</span> — demonstrating the value of stream-level decomposition over a single aggregate score.
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="paper-body">
+
+  <!-- 1. Methods -->
+  <div class="page-col">
+    <div class="section-block" id="methods">
+      <div class="sec-num">Section 1</div>
+      <h2 class="sec-title">Feature Engineering</h2>
+      <div class="sec-body">
+        <p>Fifteen session-level features are derived from raw typing logs and organized into three semantically coherent streams. Features were selected through ablation — three candidates (SSF, day_of_week, ESRP) were dropped after per-feature R² analysis showed they contributed noise rather than signal, with the Motor stream R² improving from 0.666 to 0.980 upon their removal.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide-col">
+    <div class="feat-table-wrap">
+      <table class="feat-table">
+        <thead>
+          <tr><th>Feature</th><th>Stream</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr class="stream-header"><td colspan="3">Speed (5 features)</td></tr>
+          <tr><td>EV</td><td>Speed</td><td>Exponentially weighted WPM — down-weights early warm-up laps</td></tr>
+          <tr><td>RSV</td><td>Speed</td><td>Rolling session variance over last 10 sessions</td></tr>
+          <tr><td>wpm_vs_50roll</td><td>Speed</td><td>Current WPM minus 50-session rolling mean</td></tr>
+          <tr><td>improvement_rate</td><td>Speed</td><td>Slope of WPM over 14-session linear regression window</td></tr>
+          <tr><td>warmup_effect</td><td>Speed</td><td>WPM gap between first and last lap of a session</td></tr>
+          <tr class="stream-header"><td colspan="3">Accuracy (5 features)</td></tr>
+          <tr><td>error_entropy</td><td>Accuracy</td><td>Shannon entropy of per-character error distribution</td></tr>
+          <tr><td>speed_var_wl</td><td>Accuracy</td><td>Variance of WPM across word-length bins</td></tr>
+          <tr><td>worst_char_improvement</td><td>Accuracy</td><td>Improvement rate on historically weakest characters</td></tr>
+          <tr><td>miss_ratio_top3</td><td>Accuracy</td><td>Error rate on the 3 most-missed characters</td></tr>
+          <tr><td>error_rate_trend</td><td>Accuracy</td><td>Slope of error rate over 14 sessions</td></tr>
+          <tr class="stream-header"><td colspan="3">Motor (5 features)</td></tr>
+          <tr><td>CTA</td><td>Motor</td><td>Cosine-transformed time-of-day — captures circadian periodicity</td></tr>
+          <tr><td>CTA_cos</td><td>Motor</td><td>Sine component of time-of-day (orthogonal to CTA)</td></tr>
+          <tr><td>hand_asymmetry</td><td>Motor</td><td>Ratio of left-hand to right-hand key error rates</td></tr>
+          <tr><td>time_of_day</td><td>Motor</td><td>Raw session hour (0–23)</td></tr>
+          <tr><td>speed_dispersion</td><td>Motor</td><td>IQR of per-character WPM within a session</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="page-col">
+    <div class="section-block">
+      <div class="sec-num">Section 2</div>
+      <h2 class="sec-title">Model Architecture &amp; Training</h2>
+      <div class="sec-body">
+        <p>The model is a multi-head autoencoder. A shared encoder compresses the 15-feature input into a 10-dimensional latent representation. Three stream-specific decoder heads independently reconstruct their respective feature subsets. This forces the latent space to capture cross-stream correlations while allowing each decoder to specialize.</p>
+        <p><strong>Encoder:</strong> Linear(15→32) → Tanh → Linear(32→16) → Tanh → Linear(16→10) → Tanh. Tanh activations are used throughout to preserve signed deviations, which are critical for distinguishing above-baseline from below-baseline sessions.</p>
+        <p><strong>Decoder heads:</strong> Each head follows the same pattern — Linear(10→16) → Tanh → Linear(16→5). All three share the same latent vector.</p>
+        <p><strong>Loss function:</strong> Huber loss (δ=1.0) normalized by head size, summed across streams. Normalization ensures equal gradient contribution regardless of head size. Per-feature weights emphasize high-information features within each stream.</p>
+        <p><strong>Training:</strong> DP-SGD via Opacus. EPOCHS=120, BATCH_SIZE=64, LR_MAX=2×10⁻³ (cosine schedule), MAX_GRAD_NORM=1.0, PATIENCE=20. Privacy budget tracked by RDP accountant; achieved ε=9.997 at δ=1×10⁻⁵.</p>
+        <p><strong>Data split:</strong> Chronological 75/25 — first 75% of days for training, remaining 25% held out. No shuffle; temporal ordering preserved to prevent leakage.</p>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="section-block" id="results">
+      <div class="sec-num">Section 3</div>
+      <h2 class="sec-title">Results</h2>
+      <div class="sec-body">
+        <p>The model was evaluated against four standard anomaly detection methods on the same dataset and split: Statistical Process Control (rolling mean ±2σ), Isolation Forest (contamination=0.10), One-Class SVM (nu=0.10, RBF kernel), and a non-DP autoencoder with identical architecture trained without Opacus.</p>
+        <p>Three evaluation metrics were used: <em>anomaly rate</em> (selectivity), <em>WPM gap</em> (whether flagged days are genuinely worse, tested via Welch t-test), and <em>Dec 2024 detection rate</em> (sensitivity on a known ground-truth anomaly period when average WPM dropped to approximately 60).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide-col">
+    <div class="results-table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Anomaly %</th>
+            <th>WPM Gap</th>
+            <th>Dec 2024 %</th>
+            <th>p-value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SPC</td><td>0.2%</td><td>+0.0</td><td>0%</td><td><span class="ns">1.000 ns</span></td></tr>
+          <tr><td>Isolation Forest</td><td>9.6%</td><td>+39.8</td><td>67%</td><td><span class="sig">&lt;0.001 ***</span></td></tr>
+          <tr><td>One-Class SVM</td><td>7.9%</td><td>+51.0</td><td>78%</td><td><span class="sig">&lt;0.001 ***</span></td></tr>
+          <tr><td>Non-DP Autoencoder</td><td>8.5%</td><td>+46.6</td><td>100%</td><td><span class="sig">&lt;0.001 ***</span></td></tr>
+          <tr class="hl"><td>NeuroLink V4 (DP ε=10)</td><td>8.5%</td><td>+45.9</td><td>89%</td><td><span class="sig">&lt;0.001 ***</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="page-col">
+    <p style="font-family:'Inter',sans-serif;font-size:0.8125rem;color:var(--muted);margin:0.5rem 0 1.75rem;font-style:italic;line-height:1.6;">Table 1. Baseline comparison across 492 days (50,321 lessons). WPM gap = mean difference between flagged and normal days. Dec 2024 = fraction of a known low-performance period flagged. *** p&lt;0.001, ns = not significant.</p>
+
+    <p style="font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;">Figure 2 — Dec 2024 detection rate</p>
+    <div class="det-bars">
+      <div class="det-bar"><span class="det-name">Non-DP AE</span><div class="det-track"><div class="det-fill" style="width:100%;background:var(--green)"></div></div><span class="det-pct">100%</span></div>
+      <div class="det-bar"><span class="det-name">NeuroLink V4</span><div class="det-track"><div class="det-fill" style="width:89%;background:var(--blue)"></div></div><span class="det-pct">89%</span></div>
+      <div class="det-bar"><span class="det-name">OC-SVM</span><div class="det-track"><div class="det-fill" style="width:78%;background:var(--muted)"></div></div><span class="det-pct">78%</span></div>
+      <div class="det-bar"><span class="det-name">Iso Forest</span><div class="det-track"><div class="det-fill" style="width:67%;background:var(--muted)"></div></div><span class="det-pct">67%</span></div>
+      <div class="det-bar"><span class="det-name">SPC</span><div class="det-track"><div class="det-fill" style="width:0.5%;background:var(--red)"></div></div><span class="det-pct">0%</span></div>
+    </div>
+
+    <div class="callout-row">
+      <div class="callout-box">
+        <div class="cb-lbl">Privacy cost ΔR²</div>
+        <div class="cb-val amber">+0.0478</div>
+        <div class="cb-sub">Non-DP: 0.9776 → NeuroLink: 0.9299</div>
+      </div>
+      <div class="callout-box">
+        <div class="cb-lbl">Anomaly day breakdown</div>
+        <div style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.375rem;">
+          <span class="tier t-h" style="display:block;">HIGH — 18.5%</span>
+          <span class="tier t-e" style="display:block;">ELEVATED — 18.3%</span>
+          <span class="tier t-n" style="display:block;">NORMAL — 63.2%</span>
+        </div>
+      </div>
+      <div class="callout-box">
+        <div class="cb-lbl">90-day WPM forecast</div>
+        <div class="cb-val green">122.9</div>
+        <div class="cb-sub">From 7-day avg 112.7 WPM. Log-growth, LDI-adjusted.</div>
+      </div>
+    </div>
+
+    <!-- Research direction -->
+    <div class="section-block" id="research">
+      <div class="sec-num">Section 4</div>
+      <h2 class="sec-title">Research Direction</h2>
+      <div class="sec-body">
+        <p>The long-term hypothesis underlying this work is that <em>typing behavioral drift is a passive, early signal for neurological change</em>. Clinical literature establishes that fine motor degradation precedes visible symptoms in several conditions by months to years. Everyday typing is fine motor behavior, governed by the same neural pathways.</p>
+        <p>A system that monitors a personal behavioral baseline continuously — privately, on-device, without requiring any change in behavior — could potentially surface anomaly patterns worth discussing with a physician before traditional screening would identify them.</p>
+      </div>
+
+      <div class="disclaimer-box" style="margin-top:1.25rem;">
+        <p><strong>Important disclaimer.</strong> NeuroLink is a research project and is not a medical device. Nothing in this system constitutes medical advice or clinical diagnosis. If you have concerns about your neurological health, please consult a qualified physician.</p>
+      </div>
+
+      <div class="sec-body" style="margin-top:1.5rem;">
+        <p>Conditions for which the literature documents fine motor precursors include:</p>
+      </div>
+      <ul class="conditions">
+        <li>Early Parkinson's disease — resting tremor and rigidity detectable in motor timing years before clinical diagnosis</li>
+        <li>Multiple sclerosis — corticospinal tract disruption manifests as typing rhythm irregularities</li>
+        <li>Essential tremor — fine motor inconsistency at the character level</li>
+        <li>Cognitive fatigue — error entropy and speed variance shift measurably with mental load</li>
+        <li>Acute health changes — sleep deprivation, fever, and illness leave quantifiable motor traces</li>
+      </ul>
+    </div>
+
+    <!-- How to use -->
+    <div class="section-block">
+      <div class="sec-num">Section 5</div>
+      <h2 class="sec-title">How to Run It on Your Own Data</h2>
+      <div class="sec-body">
+        <p>The system requires keybr.com typing data. The notebook runs in Google Colab with no local installation. Your raw data never leaves your machine — only the derived feature CSV is uploaded to Colab, and the trained model weights are discarded after the session.</p>
+      </div>
+      <div class="steps-block">
+        <div class="step-row">
+          <div class="step-n">1</div>
+          <div>
+            <div class="step-title">Export your keybr data</div>
+            <p class="step-desc">Go to your keybr.com profile → Export. Download <span class="inline-code">typing-data.json</span>. This file contains your complete lesson history.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-n">2</div>
+          <div>
+            <div class="step-title">Open the Colab notebook</div>
+            <p class="step-desc">Upload <span class="inline-code">typing-data.json</span> and run all cells. The notebook generates the feature CSV, trains your personal model on a free T4 GPU (approximately 10 minutes), and produces a full report.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-n">3</div>
+          <div>
+            <div class="step-title">Read your behavioral report</div>
+            <p class="step-desc">The output includes per-stream LDI scores, anomaly timeline across your full history, comparison against four standard baselines, and a 90-day WPM forecast specific to your data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Limitations -->
+    <div class="section-block">
+      <div class="sec-num">Section 6</div>
+      <h2 class="sec-title">Limitations</h2>
+      <div class="sec-body">
+        <p><strong>N-of-1 design.</strong> All results are specific to one user. Generalizability across users is untested. Multi-user validation is a planned next step.</p>
+        <p><strong>Absence of clinical ground truth.</strong> December 2024 is used as a proxy anomaly period based on observed WPM drop, not a medically confirmed event. No clinical labels are available.</p>
+        <p><strong>Privacy budget.</strong> ε=10 is a moderate guarantee. Stronger privacy would require a larger dataset or architectural changes such as a larger batch size or fewer epochs.</p>
+        <p><strong>Forecasting assumptions.</strong> The 90-day WPM projection assumes continued log-growth. Plateau effects at high WPM are not modeled.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRY IT -->
+<div class="try-section">
+  <h2>Run it on your own data</h2>
+  <p>Your model. Your baseline. Nothing shared. Works on any keybr.com history — the more lessons you have, the stronger the signal.</p>
+  <a class="try-btn" href="https://github.com/youssefzuaiter/neurolink" target="_blank">View on GitHub</a>
+  <span class="try-note">ε = 10 · δ = 1×10⁻⁵ · local training · free Colab GPU</span>
+</div>
+
+<footer>
+  <span class="foot-l">NeuroLink V4 · Youssef Zuaiter · 2026 · Research project, not a medical device</span>
+  <a class="foot-r" href="https://github.com/youssefzuaiter/neurolink" target="_blank">github.com/youssefzuaiter/neurolink</a>
+</footer>
+
+<script>
+const canvas = document.getElementById('waveCanvas');
+const ctx = canvas.getContext('2d');
+function resize() {
+  const d = devicePixelRatio || 1;
+  canvas.width  = canvas.offsetWidth  * d;
+  canvas.height = canvas.offsetHeight * d;
+  ctx.scale(d, d);
+}
+resize();
+window.addEventListener('resize', resize);
+
+const isDark = () => {
+  const t = document.documentElement.dataset.theme;
+  if (t === 'dark') return true;
+  if (t === 'light') return false;
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+};
+
+let frame = 0;
+function draw() {
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  ctx.clearRect(0, 0, W, H);
+  const dark = isDark();
+
+  const streams = [
+    { y: H * 0.32, amp: 22, freq: 0.011, phase: 0,   spd: 0.5, spike: true,
+      color: dark ? 'rgba(96,165,250,0.55)' : 'rgba(37,99,235,0.45)' },
+    { y: H * 0.60, amp: 14, freq: 0.014, phase: 2.2, spd: 0.4, spike: false,
+      color: dark ? 'rgba(96,165,250,0.22)' : 'rgba(37,99,235,0.18)' },
+    { y: H * 0.80, amp: 9,  freq: 0.017, phase: 4.5, spd: 0.7, spike: false,
+      color: dark ? 'rgba(96,165,250,0.14)' : 'rgba(37,99,235,0.1)' },
+  ];
+
+  const alertC = dark ? '#F87171' : '#DC2626';
+  const anomX  = 0.63 + Math.sin(frame * 0.0018) * 0.022;
+
+  streams.forEach(s => {
+    ctx.beginPath();
+    let first = true;
+    for (let x = 0; x <= W; x += 1.5) {
+      const p = x / W, t = frame * 0.0006 * s.spd;
+      const n = Math.sin(p * 73 + t * 3.0 + s.phase) * 2.2
+              + Math.sin(p * 31 + t * 1.7 + s.phase) * 1.4;
+      let y = s.y + Math.sin(p * W * s.freq + t * Math.PI * 2 + s.phase) * s.amp + n;
+      if (s.spike) {
+        const d = Math.abs(p - anomX);
+        if (d < 0.05) y -= Math.pow(Math.max(0, 1 - d / 0.05), 2) * 55;
+      }
+      first ? (ctx.moveTo(x, y), first = false) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = s.spike ? 1.5 : 0.9;
+    ctx.stroke();
+
+    if (s.spike) {
+      ctx.beginPath();
+      let fa = true;
+      for (let x = Math.max(0, (anomX-.06)*W); x <= Math.min(W, (anomX+.06)*W); x++) {
+        const p = x / W, t2 = frame * 0.0006 * s.spd;
+        const n2 = Math.sin(p*73+t2*3.0+s.phase)*2.2+Math.sin(p*31+t2*1.7+s.phase)*1.4;
+        const d = Math.abs(p - anomX);
+        const y = s.y + Math.sin(p*W*s.freq+t2*Math.PI*2+s.phase)*s.amp + n2
+                - Math.pow(Math.max(0,1-d/0.05),2)*55;
+        fa ? (ctx.moveTo(x, y), fa=false) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = alertC;
+      ctx.lineWidth = 1.75;
+      ctx.shadowColor = alertC; ctx.shadowBlur = 8;
+      ctx.stroke(); ctx.shadowBlur = 0;
+
+      const lx = anomX * W, ly = s.y - 38;
+      ctx.font = '500 9px "Inter", sans-serif';
+      ctx.fillStyle = alertC; ctx.textAlign = 'center';
+      ctx.fillText('ANOMALY DETECTED', lx, ly);
+      ctx.beginPath(); ctx.moveTo(lx, ly+5); ctx.lineTo(lx, s.y-28);
+      ctx.strokeStyle = alertC; ctx.lineWidth = 0.75;
+      ctx.globalAlpha = 0.5; ctx.setLineDash([2,3]);
+      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+  });
+
+  // stream labels
+  const labelColor = dark ? 'rgba(148,163,184,0.5)' : 'rgba(100,116,139,0.5)';
+  ctx.font = '10px "Inter", sans-serif';
+  ctx.fillStyle = labelColor; ctx.textAlign = 'left';
+  ctx.fillText('SPEED', 12, streams[0].y - 28);
+  ctx.fillText('ACCURACY', 12, streams[1].y - 20);
+  ctx.fillText('MOTOR', 12, streams[2].y - 15);
+
+  frame++;
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
